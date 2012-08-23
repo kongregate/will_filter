@@ -1,9 +1,9 @@
 <div style="font-size:12px;font-weight:bold;margin-bottom:5px;">
   <div style="float:right; padding-right:2px;">
 	  <% if @calendar.mode == 'month' %>
-	     <%=link_to_function("#{image_tag("/wf/images/expand.gif")}", "wfCalendar.changeMode('quarter', #{@calendar.show_time?})", :style => "font-size:10px; padding-bottom: 3px")%> &nbsp;
+	     <%=link_to_function(image_tag("/wf/images/expand.gif"), "wfCalendar.changeMode('quarter', #{@calendar.show_time?})", :style => "font-size:10px; padding-bottom: 3px")%> &nbsp;
 		<% elsif @calendar.mode == 'quarter' %>
-       <%=link_to_function("#{image_tag("/wf/images/expand.gif")}", "wfCalendar.changeMode('annual', #{@calendar.show_time?})", :style => "font-size:10px; padding-bottom: 3px")%> &nbsp;
+       <%=link_to_function(image_tag("/wf/images/expand.gif"), "wfCalendar.changeMode('annual', #{@calendar.show_time?})", :style => "font-size:10px; padding-bottom: 3px")%> &nbsp;
 		<% end %>
 		 
     <%=link_to_function(image_tag("/wf/images/close.gif", :title=>"Close"), "wfCalendar.hide()")%>
@@ -43,8 +43,8 @@
 				      :
 				      <%= select_tag("wf_calendar_second", options_for_select(Wf::Calendar.second_options, @calendar.second)) %>
 			    </div>
-		      <%=link_to_function("<span>Set Date and Time</span>", "wfCalendar.setDateTime()", :class => "wf_grey_button wf_pcb") %>
-		      <%=link_to_function("<span>Cancel</span>", "wfCalendar.hide()", :class => "wf_grey_button wf_pcb") %>
+		      <%=link_to_function("<span>Set Date and Time</span>".html_safe, "wfCalendar.setDateTime()", :class => "wf_grey_button wf_pcb") %>
+		      <%=link_to_function("<span>Cancel</span>".html_safe, "wfCalendar.hide()", :class => "wf_grey_button wf_pcb") %>
 		  </div>
 		<% end %>
 	
