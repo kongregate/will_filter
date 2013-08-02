@@ -64,14 +64,13 @@ module WillFilter
   private
   
     def send_xml_data(wf_filter)
-      class_name = wf_filter.model_class_name.underscore
-      
+      class_name = wf_filter.model_class_name.underscore.gsub('/', '_')
       result = ""
       xml = Builder::XmlMarkup.new(:target => result, :indent => 1)
       xml.instruct!
       xml.tag!(class_name.pluralize) do
         wf_filter.results.each do |obj|
-          xml.tag!(class_name.underscore) do
+          xml.tag!(class_name) do
             wf_filter.fields.each do |field|
               xml.tag!(field.to_s, obj.send(field).to_s) 
             end    
