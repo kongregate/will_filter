@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,7 +32,7 @@ module WillFilter
   
     def export
       params[:page] = 1
-      params[:wf_per_page] = 10000 # mas export limit
+      params[:wf_per_page] = 10000 # max export limit
   
       @wf_filter = WillFilter::Filter.deserialize_from_params(params)
       
@@ -62,49 +62,31 @@ module WillFilter
     end  
   
   private
-  
-    def send_xml_data(wf_filter)
-      class_name = wf_filter.model_class_name.underscore.gsub('/', '_')
-      result = ""
-      xml = Builder::XmlMarkup.new(:target => result, :indent => 1)
-      xml.instruct!
-      xml.tag!(class_name.pluralize) do
-        wf_filter.results.each do |obj|
-          xml.tag!(class_name) do
-            wf_filter.fields.each do |field|
-              xml.tag!(field.to_s, obj.send(field).to_s) 
-            end    
-          end
-        end
-      end
-      
-      send_data(result, :type => 'text/xml', :charset => 'utf-8')
-    end  
-  
-    def send_json_data(wf_filter)
-      result = []
+    
+    def results_from(wf_filter)
+      results = []
       
       wf_filter.results.each do |obj|
         hash = {}
         wf_filter.fields.each do |field|
           hash[field] = obj.send(field).to_s 
         end  
-        result << hash
+        results << hash
       end
       
-      send_data(result.to_json, :type => 'text', :charset => 'utf-8')
+      results
+    end
+  
+    def send_xml_data(wf_filter)
+      send_data(results_from(wf_filter).to_xml, :type => 'text/xml', :charset => 'utf-8')
+    end  
+  
+    def send_json_data(wf_filter)
+      send_data(results_from(wf_filter).to_json, :type => 'text', :charset => 'utf-8')
     end  
     
     def send_csv_data(wf_filter)
-      result = StringIO.new
-      
-#      CSV.open(result) do |csv|
-#         csv << ["row", "of", "CSV", "data"]
-#         csv << ["another", "row"]
-#         # ...
-#       end
-      
-      CSV::Writer.generate(result) do |csv|
+      csv_string = CSV.generate do |csv|
         csv << wf_filter.fields
         wf_filter.results.each do |obj|
           row = []
@@ -115,7 +97,8 @@ module WillFilter
         end
       end
       
-      send_data(result.string, :type => 'text/csv', :charset => 'utf-8')
+      send_data csv_string, :type => 'text/csv; charset=utf-8; header=present', :charset => 'utf-8', 
+                            :disposition => "attachment; filename=results.csv"      
     end
   end
 end
