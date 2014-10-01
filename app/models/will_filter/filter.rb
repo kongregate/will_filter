@@ -23,7 +23,7 @@
 
 module WillFilter
   class Filter < ActiveRecord::Base
-    set_table_name  :will_filter_filters
+    self.table_name = 'will_filter_filters'
     serialize       :data
     before_save     :prepare_save
     after_find      :process_find
