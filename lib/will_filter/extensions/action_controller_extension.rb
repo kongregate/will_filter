@@ -24,13 +24,13 @@
 module WillFilter
   module ActionControllerExtension
     def self.included(base)
-      base.send(:include, InstanceMethods) 
-      base.before_filter :init_will_filter
+      base.send(:include, InstanceMethods)
+      base.before_action :init_will_filter
     end
 
     module InstanceMethods
       def init_will_filter
-        # only if the filters need to be  
+        # only if the filters need to be
         return unless WillFilter::Config.user_filters_enabled?
 
         wf_current_user = nil
