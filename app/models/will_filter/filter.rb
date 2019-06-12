@@ -394,7 +394,7 @@ module WillFilter
     # allows to create a filter from params only
     #############################################################################
     def self.deserialize_from_params(params)
-      params = HashWithIndifferentAccess.new(params) unless params.is_a?(HashWithIndifferentAccess)
+      params = HashWithIndifferentAccess.new(params.to_unsafe_h) unless params.is_a?(HashWithIndifferentAccess)
 
       params[:wf_type] = self.name unless params[:wf_type]
       filter_class = params[:wf_type].constantize
